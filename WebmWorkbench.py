@@ -52,7 +52,7 @@ def batchExport ():
 	
 	command = command + " \"" + i_outputFile.get() + "\""
 	
-	
+	#textCommand.insert(command)
 	print "Running :"
 	print command
 	print "-------------------------------------------------------------------------------\n"
@@ -82,16 +82,13 @@ def extractFrame (fname, strTime):
 window = Tk.Tk()
 window.title("Webm Workbench")
 window.iconbitmap("res\icon.ico")
-window.minsize(640, 480)
+window.minsize(480, 360)
 window.maxsize(640, 480)
 print "Main"
 
-p_main = Tk.PanedWindow(window, orient="vertical")
-p_main.pack(side="top", expand="yes", fill="both", padx=2, pady=2)
-
 #===============================================================================
 # Notebook (tabs) for the appli
-notebook = ttk.Notebook(p_main)
+notebook = ttk.Notebook(window)
 nbfrm_Files = ttk.Frame(notebook)
 notebook.add(nbfrm_Files, text="Files")
 
@@ -103,7 +100,23 @@ notebook.add(nbfrm_Audio, text="Audio")
 
 nbfrm_Options = ttk.Frame(notebook)
 notebook.add(nbfrm_Options, text="Options")
-notebook.pack(side="right", expand="yes", fill="both", padx=2, pady=2)
+notebook.grid(row=1, column=1, columnspan=2, sticky="WE")
+#pack(expand="yes", fill="both", padx=2, pady=2)
+
+textCommand = Tk.Text(window, width=40, height=4)
+textCommand.grid(row=2, column=1, columnspan=2, sticky="WENS", padx=2, pady=2)
+#pack(expand="yes", fill="both", padx=2, pady=2)
+
+# Buttons
+print "Buttons"
+buttonExport = Tk.Button(window, text="Execute", command=batchExport)
+buttonExport.grid(row=3, column=2, sticky="WE")
+
+#window.grid_rowconfigure(1,weight=1)
+window.grid_rowconfigure(2,weight=1)
+#window.grid_rowconfigure(3,weight=1)
+window.grid_columnconfigure(1,weight=1)
+window.grid_columnconfigure(2,weight=1)
 
 #===============================================================================
 # Container for the file
@@ -157,8 +170,7 @@ b_durationTimeSnap.grid(row=2, column=3)
 
 #===============================================================================
 # Container for the Audio
-print "Option container"
-
+print "Audio container"
 lf_audio = Tk.LabelFrame(nbfrm_Audio, text="Audio", padx=2, pady=2)
 lf_audio.pack()
 
@@ -166,7 +178,6 @@ lf_audio.pack()
 audioMode = Tk.IntVar()
 rb_audioMode_copy = Tk.Radiobutton(lf_audio, text="Convert to Vorbis", variable=audioMode, value=0)
 rb_audioMode_copy.grid(row=1, column=1, sticky='W')
-
 
 # Checkbox : no sound
 rb_audioMode_mute = Tk.Radiobutton(lf_audio, text="No audio", variable=audioMode, value=1)
@@ -198,12 +209,7 @@ ck_lowerQuality.pack()
 exportToGif = Tk.IntVar()
 ck_exportToGif = Tk.Checkbutton(lf_options, text="Export to gif", variable=exportToGif)
 ck_exportToGif.pack()
-
 #===============================================================================
-# Buttons
-print "Buttons"
-Tk.Button(window, text="Quit", command=window.quit).pack(side="right")#.grid(row=1, column=1)
-Tk.Button(window, text="Export", command=batchExport).pack(side="left")#.grid(row=1, column=2)
 
 print "mainloop"
 window.mainloop()
