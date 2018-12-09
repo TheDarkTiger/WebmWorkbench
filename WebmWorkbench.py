@@ -38,10 +38,15 @@ def batchExport ():
 		else :
 			command = command + " -crf 4"
 		
-		if noAudio.get() :
+		# Manage audio stream
+		if audioMode.get() == 0 :
+			print "To vorbis"
+			command = command + " -c:a libvorbis"
+		elif audioMode.get() == 1 :
 			print "No audio"
 			command = command + " -an"
 		else :
+			print "From audio"
 			command = command + " -c:a libvorbis"
 		
 	
@@ -150,6 +155,32 @@ i_durationTime.grid(row=2, column=2)
 b_durationTimeSnap = Tk.Button(lf_times, text="[o]", command=lambda : extractFrame("snapEnd", i_durationTime.get()) )
 b_durationTimeSnap.grid(row=2, column=3)
 
+#===============================================================================
+# Container for the Audio
+print "Option container"
+
+lf_audio = Tk.LabelFrame(nbfrm_Audio, text="Audio", padx=2, pady=2)
+lf_audio.pack()
+
+# Radobutton : Audio mode
+audioMode = Tk.IntVar()
+rb_audioMode_copy = Tk.Radiobutton(lf_audio, text="Convert to Vorbis", variable=audioMode, value=0)
+rb_audioMode_copy.grid(row=1, column=1, sticky='W')
+
+
+# Checkbox : no sound
+rb_audioMode_mute = Tk.Radiobutton(lf_audio, text="No audio", variable=audioMode, value=1)
+rb_audioMode_mute.grid(row=2, column=1, sticky='W')
+
+# Input file : change audio
+rb_audioMode_file = Tk.Radiobutton(lf_audio, text="Audio audio", variable=audioMode, value=2)
+rb_audioMode_file.grid(row=3, column=1, sticky='W')
+audioFile = Tk.StringVar()
+audioFile.set("D:\\tmp\\audio.mp3")
+i_audioFile = Tk.Entry(lf_audio, textvariable=audioFile)
+i_audioFile.grid(row=3, column=2)
+b_audioBrowse = Tk.Button(lf_audio, text="...", command=outputFileChoose)
+b_audioBrowse.grid(row=3, column=3)
 
 #===============================================================================
 # Container for the options
@@ -157,11 +188,6 @@ print "Option container"
 lf_options = Tk.LabelFrame(nbfrm_Options, text="Options", padx=2, pady=2)
 #p_main.add(lf_options)
 lf_options.pack()
-
-# Checkbox : no sound
-noAudio = Tk.IntVar()
-ck_noAudio = Tk.Checkbutton(lf_options, text="No audio", variable=noAudio)
-ck_noAudio.pack()
 
 # Checkbox : Force to standard (low quality, very tiny files)
 lowerQuality = Tk.IntVar()
