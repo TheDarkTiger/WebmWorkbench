@@ -4,6 +4,7 @@
 # Guillaume Viravau 2018-2019
 #=============================================================================#
 # A simple ffmpeg GUI for video cutting and exporting to webm                 #
+#                                                                             #
 #=============================================================================#
 
 # Python 2
@@ -23,11 +24,11 @@ import tkinter.ttk
 def batchExport() :
 	print( "\n===============================================================================" )
 	# Input file, start time and duration
-	command = "ffmpeg -ss " + i_startTime.get() + " -i \"" + i_inputFile.get() + "\" -t " + i_durationTime.get()
+	command = "ffmpeg -ss " + i_startTime.get() + " -i \"" + i_inputFile.get() + "\""
 	
 	if( exportToGif.get() ) :
 		print( "Gif" )
-		command = command + " -f gif"
+		command = command + " -t " + i_durationTime.get() + " -f gif"
 		
 		if( lowerQuality.get() ) :
 			print( "Lower quality" )
@@ -39,15 +40,6 @@ def batchExport() :
 		
 	else :
 		print( "WebM" )
-		# WebM is VP8 / VP9 codec. Here we use variable bitrate in wich each image have a constant "quality" even if one out of some must take more size. (-b:v 1M)
-		command = command + " -threads 4 -c:v libvpx -b:v 1M"
-		
-		if( lowerQuality.get() ) :
-			print( "Lower quality" )
-			command = command + " -crf 63 -vf \"fps=24,scale=-1:480,format=yuv420p\""
-		else :
-			command = command + " -crf 4"
-		
 		# Manage audio stream
 		if( audioMode.get() == 0 ) :
 			print( "To vorbis" )
@@ -57,7 +49,18 @@ def batchExport() :
 			command = command + " -an"
 		else :
 			print( "From audio" )
-			command = command + " -c:a libvorbis"
+			command = command + " -i \"" + i_audioFile.get() + "\"" " -c:a libvorbis  -shortest"
+		
+		command = command + " -t " + i_durationTime.get()
+		# WebM is VP8 / VP9 codec. Here we use variable bitrate in wich each image have a constant "quality" even if one out of some must take more size. (-b:v 1M)
+		command = command + " -threads 4 -c:v libvpx -b:v 1M"
+		
+		if( lowerQuality.get() ) :
+			print( "Lower quality" )
+			command = command + " -crf 63 -vf \"fps=24,scale=-1:480,format=yuv420p\""
+		else :
+			command = command + " -crf 4"
+		
 		
 	
 	command = command + " \"" + i_outputFile.get() + "\""
@@ -69,18 +72,12 @@ def batchExport() :
 	os.system(command)
 	print( "\n===============================================================================\n" )
 
-def inputFileChoose() :
+
+def FileChoose( TkStringVar ) :
 	filename = Tk.filedialog.askopenfilename()
 	if( len(filename) > 0 ):
 		print( filename )
-		inputFile.set(filename)
-
-
-def outputFileChoose() :
-	filename = Tk.filedialog.askopenfilename()
-	if( len(filename) > 0 ):
-		print( filename )
-		outputFile.set(filename)
+		TkStringVar.set(filename)
 
 
 # Extract thumbnail
@@ -139,7 +136,7 @@ inputFile.set( "C:\\" )
 Tk.Label( lf_files, text="Input file" ).grid( row=1, column=1 )
 i_inputFile = Tk.Entry( lf_files, textvariable=inputFile )
 i_inputFile.grid( row=1, column=2 )
-b_inputBrowse = Tk.Button( lf_files, text="...", command=inputFileChoose )
+b_inputBrowse = Tk.Button( lf_files, text="...", command=lambda : FileChoose( inputFile ) )
 b_inputBrowse.grid( row=1, column=3 )
 
 
@@ -148,7 +145,7 @@ outputFile.set( "D:\\tmp\\out.webm" )
 Tk.Label( lf_files, text="Output file" ).grid( row=2, column=1 )
 i_outputFile = Tk.Entry( lf_files, textvariable=outputFile )
 i_outputFile.grid( row=2, column=2 )
-b_outputBrowse = Tk.Button( lf_files, text="...", command=outputFileChoose )
+b_outputBrowse = Tk.Button( lf_files, text="...", command=lambda : FileChoose( outputFile ) )
 b_outputBrowse.grid( row=2, column=3 )
 
 
@@ -199,7 +196,7 @@ audioFile = Tk.StringVar()
 audioFile.set( "D:\\tmp\\audio.mp3" )
 i_audioFile = Tk.Entry( lf_audio, textvariable=audioFile )
 i_audioFile.grid( row=3, column=2 )
-b_audioBrowse = Tk.Button( lf_audio, text="...", command=outputFileChoose )
+b_audioBrowse = Tk.Button( lf_audio, text="...", command=lambda : FileChoose( audioFile ) )
 b_audioBrowse.grid( row=3, column=3 )
 
 #===============================================================================
