@@ -4,7 +4,6 @@
 # Guillaume Viravau 2018-2019
 #=============================================================================#
 # A simple ffmpeg GUI for video cutting and exporting to webm                 #
-#                                                                             #
 #=============================================================================#
 
 # Python 2
@@ -32,10 +31,10 @@ def batchExport() :
 		
 		if( lowerQuality.get() ) :
 			print( "Lower quality" )
-			command = command + " -vf \"fps=18,scale=-1:320\""
-		#else :
+			command = command + " -filter_complex \"[0:v] fps=15,scale=-1:320:flags=lanczos,split [a][b];[a] palettegen=stats_mode=diff [p];[b][p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle\""
+		else :
 			# Palettegen seems to gub right now...
-			#command = command + " -filter_complex \"[0:v] scale=-1:480,split [a][b];[a] palettegen [p];[b][p] paletteuse\""
+			command = command + " -filter_complex \"[0:v] split [a][b];[a] palettegen=stats_mode=diff [p];[b][p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle\""
 			
 		
 	else :
