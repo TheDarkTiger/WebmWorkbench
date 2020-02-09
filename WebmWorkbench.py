@@ -1,7 +1,7 @@
 #! C:\Python\Python37\python.exe
 #! coding: utf-8
 #! python3
-# Guillaume Viravau 2018-2019
+# Guillaume Viravau 2018-2020
 #=============================================================================#
 # A simple ffmpeg GUI for video cutting and exporting to webm                 #
 #=============================================================================#
@@ -31,7 +31,7 @@ def batchExport() :
 		
 		if( lowerQuality.get() ) :
 			print( "Lower quality" )
-			command = command + " -filter_complex \"[0:v] fps=15,scale=-1:320:flags=lanczos,split [a][b];[a] palettegen=stats_mode=diff [p];[b][p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle\""
+			command = command + " -vf \"fps=15,scale=-1:320\""
 		else :
 			# Palettegen seems to gub right now...
 			command = command + " -filter_complex \"[0:v] split [a][b];[a] palettegen=stats_mode=diff [p];[b][p] paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle\""
