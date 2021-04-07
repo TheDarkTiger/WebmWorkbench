@@ -1,2 +1,14 @@
 
+[_]	High	Move time to Options
+[_]	High	Add a way to toggle end time / duration
+
 [_]	Med	Vars for in video flux, and audio flux, as well as output ones.
+[_]	Med	Add a way to choose quality of video
+[_]	Med	Add a way to choose resizing of video
+[_]	Med	Redirect the console flux to the GUI
+[_]	Med	Allow to choose VP8 / VP9 (AV1?)
+
+[_]	Low	Move gif to video
+[_]	Low	Make the preview to work
+[_]	Low	Specify a size target and the program tries to give compression parameters
+
